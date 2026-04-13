@@ -1,0 +1,59 @@
+@use "@/styles/variables" as *;
+
+.wrapper {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.spinner {
+  animation: rotate 1s linear infinite;
+  transform-origin: center;
+}
+
+.track {
+  stroke: currentColor;
+  opacity: 0.2;
+}
+
+.indicator {
+  stroke: currentColor;
+}
+
+// Variants
+.light {
+  color: $color-text-white;
+}
+
+.dark {
+  color: $color-odd-text;
+}
+
+// Screen reader only
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+// Reduced motion
+@media (prefers-reduced-motion: reduce) {
+  .spinner {
+    animation-duration: 2s;
+  }
+}
+
+@keyframes rotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}

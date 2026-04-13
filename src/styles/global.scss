@@ -1,0 +1,19 @@
+@use "reset";
+@use "variables" as *;
+
+body {
+  font-family: $font-primary;
+  font-size: $font-size-base;
+  background-color: $color-body-bg;
+  color: $color-text-white;
+  line-height: 1.4;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+.test {
+  user-select: none;
+  backdrop-filter: blur(10px);
+}

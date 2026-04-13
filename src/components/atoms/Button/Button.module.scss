@@ -1,0 +1,81 @@
+@use "sass:color";
+@use "@/styles/variables" as *;
+
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-family: $font-primary;
+  font-weight: 700;
+  line-height: 1;
+  border-radius: 4px;
+  cursor: pointer;
+  transition:
+    background 0.15s ease-in-out,
+    border-color 0.15s ease-in-out;
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  &:focus-visible {
+    outline: 2px solid $color-odd-text;
+    outline-offset: 2px;
+  }
+}
+
+// Variants
+.primary {
+  background: $color-success;
+  color: $color-text-white;
+  border: 1px solid $color-odd-text;
+
+  &:hover:not(:disabled) {
+    background: color.adjust($color-success, $lightness: -8%);
+  }
+}
+
+.secondary {
+  background: rgba($color-black, 0.1);
+  color: $color-text-white;
+
+  &:hover:not(:disabled) {
+    background: $color-white;
+    color: $color-black;
+  }
+}
+
+.ghost {
+  background: transparent;
+  color: $color-text-white;
+  border: 1px solid transparent;
+
+  &:hover:not(:disabled) {
+    background: rgba($color-white, 0.1);
+  }
+}
+
+// Sizes
+.sm {
+  height: 28px;
+  padding: 0 10px;
+  font-size: $font-size-xs;
+}
+
+.md {
+  height: 36px;
+  padding: 0 14px;
+  font-size: $font-size-sm;
+}
+
+.lg {
+  height: 44px;
+  padding: 0 18px;
+  font-size: $font-size-md;
+}
+
+.fullWidth {
+  width: 100%;
+}

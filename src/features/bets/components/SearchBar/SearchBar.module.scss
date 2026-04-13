@@ -1,0 +1,39 @@
+@use "@/styles/variables" as *;
+@use "@/styles/mixins" as *;
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  background-color: $color-toolbar-bg;
+  border-bottom: 1px solid rgba($color-white, 0.1);
+  justify-content: space-between;
+
+  @include respond-to(tablet) {
+    padding-right: 12px;
+  }
+}
+
+.searchBarContainer {
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.favoriteButtonContainer {
+  height: 100%;
+  border-right: 1px solid rgba($color-white, 0.1);
+  padding: 12px;
+  margin-right: 12px;
+}
+
+.favoriteButton {
+  padding: 4px;
+
+  &:hover {
+    background-color: rgba($color-white, 0.1);
+  }
+}
+
+.favoriteButtonActive {
+  background-color: rgba($color-white, 0.1);
+}

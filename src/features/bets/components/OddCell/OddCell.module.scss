@@ -1,0 +1,36 @@
+@use "sass:color";
+@use "@/styles/variables" as *;
+
+.oddCell {
+  cursor: pointer;
+  background: none;
+  border: none;
+  border-left: 1px solid $color-row-normal-border;
+  font-family: $font-primary;
+  font-size: $font-size-xs;
+  font-weight: 500;
+  color: $color-odd-text;
+  transition:
+    background-color 0.15s,
+    color 0.15s;
+  width: 100%;
+
+  &:hover {
+    background-color: rgba($color-odd-text, 0.08);
+  }
+}
+
+.oddSelected {
+  background-color: $color-odd-text;
+  color: #fff;
+  &:hover {
+    background-color: color.adjust($color-odd-text, $lightness: -8%);
+  }
+}
+
+.oddEmpty {
+  cursor: default;
+  &:hover {
+    background-color: transparent;
+  }
+}

@@ -1,0 +1,136 @@
+@use "sass:color";
+@use "@/styles/variables" as *;
+@use "@/styles/mixins" as *;
+
+.panel {
+  background-color: $color-toolbar-bg;
+  border-radius: 4px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 12px;
+  background-color: $color-header-bg;
+
+  @include respond-to(tablet) {
+    display: none;
+  }
+}
+
+.title {
+  font-size: $font-size-base;
+  font-weight: 700;
+  color: $color-text-white;
+}
+
+.badge {
+  font-size: $font-size-xs;
+  font-weight: 700;
+  color: $color-text-white;
+  background-color: $color-orange;
+  padding: 2px 6px;
+  border-radius: 10px;
+  min-width: 20px;
+  text-align: center;
+}
+
+.empty {
+  padding: 30px 12px;
+  text-align: center;
+  font-size: $font-size-lg;
+  color: $color-muted;
+}
+
+.list {
+  max-height: 400px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: $color-muted $color-toolbar-bg;
+
+  @include respond-to(tablet) {
+    max-height: calc(100vh - 210px);
+    overflow-y: auto;
+  }
+}
+
+.mbsWarning {
+  padding: 8px 12px;
+  font-size: $font-size-sm;
+  border-top: 1px solid rgba($color-white, 0.1);
+  color: $color-white;
+  text-align: center;
+}
+
+.footer {
+  border-top: 1px solid rgba($color-white, 0.1);
+
+  @include respond-to(tablet) {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    z-index: 1000;
+  }
+}
+
+.summary {
+  padding: 10px 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  border-bottom: 1px solid rgba($color-white, 0.1);
+}
+
+.totalRow {
+  display: flex;
+  flex-direction: column;
+  font-size: $font-size-xs;
+  color: $color-header-text;
+}
+
+.totalValue {
+  font-size: $font-size-base;
+  font-weight: 700;
+  color: $color-text-white;
+}
+
+.amount {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  font-size: $font-size-xs;
+  color: $color-header-text;
+
+  span {
+    margin-bottom: 4px;
+  }
+}
+
+.totalPrice {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 12px;
+  font-size: $font-size-xs;
+  color: $color-header-text;
+}
+
+.price {
+  font-size: $font-size-lg;
+  color: $color-text-white;
+  font-weight: 700;
+}
+
+.actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  padding: 10px 12px;
+}

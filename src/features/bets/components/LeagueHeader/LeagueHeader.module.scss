@@ -1,0 +1,85 @@
+@use "@/styles/variables" as *;
+@use "@/styles/mixins" as *;
+
+.leagueHeader {
+  height: 34px;
+  min-height: 34px;
+  display: grid;
+  grid-template-columns:
+    9fr /* betInfo */
+    1fr /* mbs */
+    2fr 2fr 2fr /* maç sonucu 1 X 2 */
+    2fr 2fr /* alt/üst */
+    2fr 2fr 2fr; /* çifte şans */
+  align-items: center;
+  justify-content: space-between;
+  background-color: $color-toolbar-bg;
+  border-bottom: 1px solid rgba($color-white, 0.1);
+
+  > div {
+    border-left: 1px solid rgba($color-white, 0.1);
+
+    &:first-child {
+      border-left: none;
+    }
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+  }
+
+  @include respond-to(tablet) {
+    height: 68px;
+    min-height: 68px;
+    grid-template-columns: repeat(10, 1fr);
+    grid-template-rows: 1fr 1fr;
+
+    // info
+    > div:nth-child(1) {
+      grid-row: 1;
+      grid-column: 1 / -1;
+    }
+
+    // MBS empty div
+    > div:nth-child(2) {
+      display: none;
+    }
+
+    // 8 odds labels
+    @for $i from 3 through 10 {
+      > div:nth-child(#{$i}) {
+        grid-row: 2;
+        grid-column: #{$i};
+      }
+    }
+
+    > div {
+      border-bottom: 1px solid rgba($color-white, 0.1);
+    }
+  }
+}
+
+.info {
+  justify-content: space-between !important;
+  padding: 0 10px;
+}
+
+.leagueName {
+  font-size: $font-size-sm;
+  font-weight: 700;
+  color: $color-text-white;
+}
+
+.date {
+  font-size: $font-size-xs;
+  font-weight: 500;
+  color: $color-header-text;
+}
+
+.columnLabel {
+  font-size: $font-size-xs;
+  font-weight: 700;
+  color: $color-header-text;
+  text-transform: uppercase;
+}

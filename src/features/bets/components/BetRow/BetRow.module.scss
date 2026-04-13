@@ -1,0 +1,112 @@
+@use "sass:color";
+@use "sass:math";
+@use "@/styles/variables" as *;
+@use "@/styles/mixins" as *;
+
+$mobile-cols: 10;
+
+.row {
+  height: 34px;
+  min-height: 34px;
+  display: grid;
+  grid-template-columns:
+    1fr /* favorite */
+    1fr /* time */
+    7fr /* betInfo */
+    1fr /* mbs */
+    2fr 2fr 2fr /* maç sonucu 1 X 2 */
+    2fr 2fr /* alt/üst */
+    2fr 2fr 2fr; /* çifte şans */
+  background-color: $color-row-normal-bg;
+  border-bottom: 1px solid $color-row-normal-border;
+  align-items: center;
+
+  &:hover {
+    background-color: rgba($color-row-normal-bg, 0.95);
+  }
+
+  > * {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    border-left: 1px solid $color-row-normal-border;
+
+    &:first-child {
+      border-left: none;
+    }
+  }
+
+  @include respond-to(tablet) {
+    height: 68px;
+    min-height: 68px;
+    grid-template-columns: repeat($mobile-cols, 1fr);
+    grid-template-rows: 1fr 1fr;
+
+    // favorite | matchName | MBS
+    > *:nth-child(1) {
+      grid-row: 1;
+      grid-column: 1;
+    }
+
+    // time
+    > *:nth-child(2) {
+      grid-row: 1;
+      grid-column: 2 / 3;
+    }
+
+    // betInfo
+    > *:nth-child(3) {
+      grid-row: 1;
+      grid-column: 3 / #{$mobile-cols};
+    }
+
+    // MBS
+    > *:nth-child(4) {
+      grid-row: 1;
+      grid-column: #{$mobile-cols};
+    }
+
+    // 8 odds cells
+    @for $i from 5 through 12 {
+      > *:nth-child(#{$i}) {
+        grid-row: 2;
+        grid-column: #{$i - 2};
+      }
+    }
+
+    > * {
+      border-bottom: 1px solid $color-row-normal-border;
+    }
+  }
+}
+
+.favorite {
+  color: $color-bet-name-text;
+}
+
+.time {
+  font-weight: 500;
+  line-height: 34px;
+  color: $color-odd-text;
+  font-size: $font-size-sm;
+}
+
+.betInfo {
+  justify-content: flex-start !important;
+  padding-left: 10px;
+}
+
+.betName {
+  color: $color-bet-name-text;
+  font-weight: 700;
+  @include truncate;
+
+  @include respond-to(tablet) {
+    font-size: $font-size-md;
+  }
+}
+
+.oddsArea {
+  cursor: pointer;
+}

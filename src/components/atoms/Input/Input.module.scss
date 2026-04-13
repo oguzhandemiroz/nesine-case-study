@@ -1,0 +1,127 @@
+@use "@/styles/variables" as *;
+
+.wrapper {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  background: #ffffff;
+  border: 1px solid $color-row-normal-border;
+  border-radius: 4px;
+  transition: border-color 0.15s ease-in-out;
+
+  &:focus-within {
+    border-color: $color-odd-text;
+  }
+}
+
+.input {
+  flex: 1;
+  width: 100%;
+  background: transparent;
+  border: none;
+  outline: none;
+  font-family: $font-primary;
+  color: $color-odd-text;
+
+  &::placeholder {
+    color: $color-muted;
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    color: $color-muted;
+  }
+}
+
+// Sizes
+.sm {
+  height: 28px;
+
+  .input {
+    font-size: $font-size-xs;
+    padding: 0 10px;
+  }
+
+  &.hasLeftIcon .input {
+    padding-left: 28px;
+  }
+
+  &.hasRightIcon .input {
+    padding-right: 28px;
+  }
+
+  .leftIcon,
+  .rightIcon {
+    width: 28px;
+  }
+}
+
+.md {
+  height: 36px;
+
+  .input {
+    font-size: $font-size-sm;
+    padding: 0 12px;
+  }
+
+  &.hasLeftIcon .input {
+    padding-left: 36px;
+  }
+
+  &.hasRightIcon .input {
+    padding-right: 36px;
+  }
+
+  .leftIcon,
+  .rightIcon {
+    width: 36px;
+  }
+}
+
+.lg {
+  height: 44px;
+
+  .input {
+    font-size: $font-size-md;
+    padding: 0 16px;
+  }
+
+  &.hasLeftIcon .input {
+    padding-left: 44px;
+  }
+
+  &.hasRightIcon .input {
+    padding-right: 44px;
+  }
+
+  .leftIcon,
+  .rightIcon {
+    width: 44px;
+  }
+}
+
+.fullWidth {
+  display: flex;
+  width: 100%;
+}
+
+// Icon positions
+.leftIcon,
+.rightIcon {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: $color-muted;
+  pointer-events: none;
+}
+
+.leftIcon {
+  left: 0;
+}
+
+.rightIcon {
+  right: 0;
+}
