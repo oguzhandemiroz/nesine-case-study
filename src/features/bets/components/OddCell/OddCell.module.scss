@@ -15,22 +15,24 @@
     color 0.15s;
   width: 100%;
 
-  &:hover {
-    background-color: rgba($color-odd-text, 0.08);
+  @media (hover: hover) {
+    &:hover {
+      background-color: rgba($color-odd-text, 0.08);
+    }
   }
 }
 
 .oddSelected {
   background-color: $color-odd-text;
   color: #fff;
-  &:hover {
-    background-color: color.adjust($color-odd-text, $lightness: -8%);
+
+  @media (hover: hover) {
+    &:hover {
+      background-color: color.adjust($color-odd-text, $lightness: -8%);
+    }
   }
 }
 
 .oddEmpty {
   cursor: default;
-  &:hover {
-    background-color: transparent;
-  }
 }
