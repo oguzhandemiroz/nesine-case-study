@@ -1,49 +1,86 @@
 # Performans Raporu
 
 - **Test Cihazı:** MacBook Pro 14", Apple M4, 16GB RAM, 512GB SSD
-- **Tarayıcı:** Google Chrome (DevTools Performance panel)
-
-> CWV Rating Ölçütleri:
-> - **LCP:** Good < 2.5s · Needs Improvement 2.5s–4.0s · Poor > 4.0s
-> - **CLS:** Good < 0.1 · Needs Improvement 0.1–0.25 · Poor > 0.25
-> - **INP:** Good < 200ms · Needs Improvement 200ms–500ms · Poor > 500ms
+- **Tarayıcı:** Google Chrome (DevTools Performance panel + Lighthouse)
+- **URL:** https://oguzhandemiroz.github.io/nesine-case-study/
 
 ---
 
-## Lighthouse Skorları
+## Lighthouse Skorları (Production — GitHub Pages)
 
-|  | Development | | Production | |
-|--|:---:|:---:|:---:|:---:|
-| **Kategori** | **Desktop** | **Mobile** | **Desktop** | **Mobile** |
-| Performance | 95 | 51 | 99 | 91 |
-| Accessibility | 88 | 88 | 82 | 88 |
-| Best Practices | 100 | 100 | 100 | 100 |
-| SEO | 90 | 90 | 90 | 90 |
+| Kategori | Desktop | Mobile (throttled) |
+|----------|:---:|:---:|
+| **Performance** | 100 | 94 |
+| **Accessibility** | 89 | 89 |
+| **Best Practices** | 100 | 96 |
+| **SEO** | 90 | 90 |
 
+### Lighthouse Metrikleri (Production)
+
+| Metrik | Desktop | Rating | Mobile (throttled) | Rating |
+|--------|:---:|:---:|:---:|:---:|
+| **FCP** | 0.0s | **Good** | 0.8s | **Good** |
+| **LCP** | 0.1s | **Good** | 3.1s | **Needs Improvement** |
+| **TBT** | 0ms | **Good** | 20ms | **Good** |
+| **CLS** | 0 | **Good** | 0 | **Good** |
+| **Speed Index** | 0.5s | **Good** | 1.7s | **Good** |
+| **TTI** | 0.1s | **Good** | 3.1s | **Good** |
+
+> Mobile Lighthouse, 4x CPU + slow 4G.
 ---
 
-## Production Build — DevTools Performance Trace
+## Production Build — DevTools Performance Trace (GitHub Pages)
 
-Chrome DevTools trace ile ölçülmüş lab değerleri (production build, `npx serve dist`).
+Chrome DevTools trace ile ölçülmüş lab değerleri. Lighthouse'dan farklı olarak gerçek network koşullarını kullanır.
 
 ### Desktop — No Throttling
 
 | Metrik | Değer | Rating |
-|--------|:-----:|:------:|
+|--------|:---:|:---:|
+| **LCP** | 71ms | **Good** |
+| **CLS** | 0 | **Good** |
+| **TTFB** | 2ms | **Good** |
+| **Critical Path** | 16ms | **Good** |
+
+### Mobile — 4x CPU + Fast 4G
+
+| Metrik | Değer | Rating |
+|--------|:---:|:---:|
+| **LCP** | 330ms | **Good** |
+| **CLS** | 0 | **Good** |
+| **TTFB** | 1ms | **Good** |
+
+### Mobile — 6x CPU + Fast 4G
+
+| Metrik | Değer | Rating |
+|--------|:---:|:---:|
+| **LCP** | 731ms | **Good** |
+| **CLS** | 0 | **Good** |
+
+---
+
+## Production Build — DevTools Performance Trace (localhost)
+
+`pnpm build && npx serve dist` ile localhost üzerinden ölçülmüş değerler.
+
+### Desktop — No Throttling
+
+| Metrik | Değer | Rating |
+|--------|:---:|:---:|
 | **LCP** | 159ms | **Good** |
 | **CLS** | 0 | **Good** |
 
 ### Mobile — 4x CPU + Fast 4G
 
 | Metrik | Değer | Rating |
-|--------|:-----:|:------:|
+|--------|:---:|:---:|
 | **LCP** | 639ms | **Good** |
 | **CLS** | 0 | **Good** |
 
 ### Mobile — 6x CPU + Fast 4G
 
 | Metrik | Değer | Rating |
-|--------|:-----:|:------:|
+|--------|:---:|:---:|
 | **LCP** | 731ms | **Good** |
 | **CLS** | 0 | **Good** |
 
@@ -123,10 +160,10 @@ Chrome DevTools trace ile ölçülmüş lab değerleri (production build, `npx s
 
 ## Değerlendirme
 
-**CLS her zaman 0.** Toolbar ve sidebar her state'de (loading/error/success) aynı component'leri render ettiği için layout shift oluşmuyor.
+**CLS her senaryoda 0.** Toolbar ve sidebar her state'de (loading/error/success) aynı component'leri render ettiği için layout shift oluşmuyor.
 
-**Production vs Development farkı belirgin.** Production build'de mobile 4x throttle + Fast 4G'de LCP 639ms iken, development build'de aynı koşulda 1.18s–1.32s. Minify, tree-shaking ve splitChunks bu farkı yaratıyor.
+**LCP** kupon doluyken artıyor çünkü `CartPanel` içindeki seçili bahisler DOM'a ekleniyor ve LCP elementi sidebar'daki son büyük text node'una kayıyor. Kupon boşken LCP elementi bülten satırlarındaki maç ismi oluyor ve çok daha hızlı çiziliyor.
 
-**LCP** kupon doluyken belirgin şekilde artıyor çünkü `CartPanel` içindeki seçili bahisler DOM'a ekleniyor ve LCP elementi sidebar'daki son büyük text node'una kayıyor. Kupon boşken LCP elementi bülten satırlarındaki maç ismi oluyor ve çok daha hızlı çiziliyor.
+**INP** 6x throttle'a kadar Good aralıkta. 20x throttle gerçekçi bir senaryo değil ancak uygulamanın kırılma noktasını göstermek için dahil edildi.
 
-**INP** 6x throttle'a kadar Good aralıkta. 20x throttle (gerçek gerçekçi bir senaryo değil ancak uygulamanın kırılma noktasını göstermek için dahil edildi.
+**Bundle boyutu (275KB)** performans bütçesi dahilinde. `splitChunks` ile react-vendor ayrı cache'leniyor, uygulama kodu güncellendiğinde kullanıcı sadece `main.js`'i tekrar indiriyor.
