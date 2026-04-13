@@ -4,6 +4,8 @@
 - **Tarayıcı:** Google Chrome (DevTools Performance panel + Lighthouse)
 - **URL:** https://oguzhandemiroz.github.io/nesine-case-study/
 
+> **[English](PERFORMANCE.md)**
+
 ---
 
 ## Lighthouse Skorları (Production — GitHub Pages)

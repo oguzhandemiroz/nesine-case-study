@@ -1,146 +1,148 @@
 # Nesine Case Study
 
-İddaa bülten ekranı ve kupon oluşturma uygulaması. ~3000 maçı tek sayfada performanslı şekilde listeler, oran seçimi ile kupon oluşturmayı sağlar. UI tasarımı nesine.com'a uygun şekilde ayarlanmıştır. Mobil cihazlarda da benzer deneyimi yaşatabilmek adına responsive şekilde geliştirilmiştir.
+Iddaa bulletin board and betting slip application. Lists ~3000 matches on a single page with high performance, allowing users to build a betting slip by selecting odds. The UI follows the nesine.com design language and is fully responsive to provide a consistent experience on mobile devices.
 
 **Demo:** https://oguzhandemiroz.github.io/nesine-case-study/
 
-| Masaüstü | Mobil | Mobil Kupon |
+> **[Türkçe README](README.tr.md)**
+
+| Desktop | Mobile | Mobile Slip |
 |:---:|:---:|:---:|
-| ![Masaüstü Görünüm](src/assets/desktop-view.png) | ![Mobil Görünüm](src/assets/mobile-view.png) | ![Mobil Kupon](src/assets/mobile-cart-view.png) |
+| ![Desktop View](src/assets/desktop-view.png) | ![Mobile View](src/assets/mobile-view.png) | ![Mobile Slip](src/assets/mobile-cart-view.png) |
 
-## Kurulum
+## Setup
 
-Node.js **≥18.12** gereklidir. Projede `.nvmrc` var, nvm kullanıyorsanız:
+Node.js **≥18.12** is required. The project includes an `.nvmrc` file, so if you use nvm:
 
 ```bash
-nvm use # .nvmrc'den Node 22'yi yükler
+nvm use # loads Node 22 from .nvmrc
 pnpm install
 pnpm start # localhost:3000
 pnpm build # Production build → dist/
 
 pnpm format # Prettier
 pnpm lint # ESLint
-pnpm typecheck # TypeScript kontrolü
+pnpm typecheck # TypeScript check
 ```
 
-## Proje Yapısı
+## Project Structure
 
 ```
 src/
 ├── app/
-│   ├── index.tsx              # Entry point, provider'lar, web-vitals
-│   ├── App.tsx                # Ana uygulama, veri pipeline'ı
-│   └── Layout/                # Sayfa iskeleti (header, main, sidebar)
+│   ├── index.tsx              # Entry point, providers, web-vitals
+│   ├── App.tsx                # Root component, data pipeline
+│   └── Layout/                # Page shell (header, main, sidebar)
 │
 ├── features/
 │   ├── bets/
 │   │   ├── components/
-│   │   │   ├── BetBoard/      # react-window ile virtualized liste
-│   │   │   ├── BetRow/        # Tek maç satırı
-│   │   │   ├── OddCell/       # Oran hücresi (tıklanabilir)
-│   │   │   ├── LeagueHeader/  # Lig başlık satırı
-│   │   │   └── SearchBar/     # Arama + favori filtre
+│   │   │   ├── BetBoard/      # Virtualized list via react-window
+│   │   │   ├── BetRow/        # Single match row
+│   │   │   ├── OddCell/       # Clickable odds cell
+│   │   │   ├── LeagueHeader/  # League header row
+│   │   │   └── SearchBar/     # Search + favorites filter
 │   │   ├── store/
-│   │   │   ├── betsSlice.ts   # Redux: bülten verisi
-│   │   │   └── favoritesSlice.ts  # Redux: favori maçlar
+│   │   │   ├── betsSlice.ts   # Redux: bulletin data
+│   │   │   └── favoritesSlice.ts  # Redux: favorite matches
 │   │   ├── utils/             # filter, group, sort, flatList
-│   │   ├── config/columns.ts  # Bülten sütun tanımları
+│   │   ├── config/columns.ts  # Bulletin column definitions
 │   │   └── types.ts
 │   │
 │   └── cart/
 │       ├── components/
-│       │   ├── CartPanel/     # Kupon paneli
-│       │   └── CartItem/      # Tekil kupon satırı
-│       ├── context/           # Context API: sepet state'i
-│       └── utils/             # Tutar listesi üretici
+│       │   ├── CartPanel/     # Betting slip panel
+│       │   └── CartItem/      # Single slip entry
+│       ├── context/           # Context API: cart state
+│       └── utils/             # Stake amount list generator
 │
 ├── components/atoms/          # Button, Input, Badge, Icon, Spinner
 ├── hooks/                     # useDebounce, useMediaQuery
-├── store/                     # Redux store konfigürasyonu
-├── styles/                    # Global SCSS, değişkenler, mixins
-└── utils/                     # Intl.NumberFormat formatlama
+├── store/                     # Redux store configuration
+├── styles/                    # Global SCSS, variables, mixins
+└── utils/                     # Intl.NumberFormat formatting
 ```
 
-## Teknik Kararlar
+## Technical Decisions
 
-### Neden hem Redux hem Context API?
+### Why both Redux and Context API?
 
-Projede iki farklı state yapısı var, bunlar;
+The project has two distinct state domains:
 
-**Bülten verisi: Redux Toolkit**
+**Bulletin data: Redux Toolkit**
 
-~3000 maç kaydı, read-heavy bir yapı. Veri bir kere yükleniyor ve sonra sürekli okunuyor (filtre, arama, gruplama). `createEntityAdapter` ile normalize ediliyor, böylece `selectBetById(state, id)` ile O(1) erişim sağlanıyor. Favoriler de Redux'ta çünkü bülten verisine bağlı ve `selectIsFavorite` selector'ı ile her satırda kullanılıyor.
+~3000 match records in a read-heavy structure. Data is fetched once and then continuously read (filter, search, group). It is normalized with `createEntityAdapter`, enabling O(1) access via `selectBetById(state, id)`. Favorites also live in Redux because they are tightly coupled with bulletin data and consumed per-row through the `selectIsFavorite` selector.
 
-**Kupon (Cart): Context API + useReducer**
+**Betting slip (Cart): Context API + useReducer**
 
-Kupon verisi write-heavy ve küçük (maks. 20-30 seçim). Kullanıcı sürekli oran ekleyip çıkarıyor. Bunun için Redux'un middleware zincirinden geçmesine gerek yok, `useReducer` yeterli. Ayrıca kupon mantığı (aynı maçtan tek oran seçimi, MBS kuralı) kendi context'inde izole kalıyor.
+Cart data is write-heavy and small (max 20-30 selections). Users constantly add and remove odds. There is no need to route these through Redux's middleware chain — `useReducer` is sufficient. Additionally, slip logic (single selection per match, MBS rule) stays isolated within its own context.
 
-Favoriler ve Kupon verisi `localStorage`'a persist ediliyor.
+Both favorites and cart data are persisted to `localStorage`.
 
-### Veri İşleme Pipeline'ı
+### Data Processing Pipeline
 
-API'den gelen ham veri şu sırayla işleniyor:
+Raw data from the API flows through the following stages:
 
 ```
-API → Redux Store → filter (favori/arama) → groupByLeague → buildFlatList → react-window
+API → Redux Store → filter (favorites/search) → groupByLeague → buildFlatList → react-window
 ```
 
-Her adım `useMemo` ile sarılı. Arama inputu `useDebounce(300ms)` ile throttle ediliyor, 3000 kaydı her tuşta filtrelemiyor.
+Each step is wrapped with `useMemo`. The search input is debounced via `useDebounce(300ms)`, so filtering 3000 records doesn't fire on every keystroke.
 
-`buildFlatList` fonksiyonu gruplanmış lig verilerini düz bir array'e çeviriyor. Her eleman ya `league-header` ya da `match` tipinde. react-window bu düz listeyi render ederken `RowRenderer` içinde tipe göre doğru component'i seçiyor.
+`buildFlatList` converts grouped league data into a flat array where each element is either a `league-header` or a `match`. react-window renders this flat list, and `RowRenderer` picks the correct component based on the item type.
 
-### Performans Yaklaşımı
+### Performance Approach
 
-**Performans Raporu:** [PERFORMANCE.md](PERFORMANCE.md)
+**Performance Report:** [PERFORMANCE.md](docs/PERFORMANCE.md)
 
-Hedef eski cihazlarda sorunsuz çalışma olduğu için render maliyetlerini minimumda tutmak gerekiyordu:
+The goal was smooth operation on low-end devices, so minimizing render cost was critical:
 
-**Virtualization:** ~3000 satır DOM'a basılmıyor. `react-window` ile ekranda sadece görünür satırlar (~25 adet) render ediliyor. DOM node sayısı sabit kalıyor (~700).
+**Virtualization:** ~3000 rows are never flushed to the DOM. `react-window` renders only the visible rows (~25 at a time), keeping the DOM node count constant (~700).
 
-**Memoization:** `BetRow`, `OddCell`, `CartPanel`, `SearchBar` gibi sık render olan component'ler `React.memo` ile sarılı. `useCallback` ile callback referansları stabilize ediliyor.
+**Memoization:** Frequently rendered components like `BetRow`, `OddCell`, `CartPanel`, and `SearchBar` are wrapped with `React.memo`. `useCallback` stabilizes callback references.
 
-**CLS = 0:** Loading, error ve success state'lerinde toolbar ve sidebar her zaman aynı component'leri render ediyor. Sadece ana içerik (main slot) değişiyor. Böylece layout shift sıfır.
+**CLS = 0:** Across loading, error, and success states, the toolbar and sidebar always render the same components. Only the main content slot changes, resulting in zero layout shift.
 
-**Bundle optimizasyonu (production):**
-- `TerserPlugin` ile minify, `console.log` temizliği
-- `CssMinimizerPlugin` ile CSS minify
-- `splitChunks` ile react/vendor ayrımı (cache verimliliği)
-- `contenthash` ile uzun süreli cache
+**Bundle optimization (production):**
+- `TerserPlugin` for minification and `console.log` stripping
+- `CssMinimizerPlugin` for CSS minification
+- `splitChunks` for separating react/vendor code (cache efficiency)
+- `contenthash` for long-term caching
 
-**Diğer:**
-- `web-vitals` ile LCP, INP, CLS runtime ölçümü
-- `browserslist` hedefi: `> 0.5%`, `last 2 versions`, `not dead`, `Android >= 5`, `iOS >= 10` — Babel ve autoprefixer bu listeye göre polyfill ve vendor prefix ekliyor
-- API origin'e `<link rel="preconnect">` ile erken bağlantı
+**Other:**
+- Runtime measurement of LCP, INP, CLS via `web-vitals`
+- `browserslist` target: `> 0.5%`, `last 2 versions`, `not dead`, `Android >= 5`, `iOS >= 10` — Babel and autoprefixer use this list for polyfills and vendor prefixes
+- Early connection to the API origin via `<link rel="preconnect">`
 
-### Kupon Mantığı
+### Betting Slip Logic
 
-Bir maç için tek bir oran seçimi yapılabilir:
+Only one odds selection per match is allowed:
 
-- Yeni oran seçildiğinde → kupona eklenir
-- Aynı oran tekrar tıklanırsa → kupondan çıkarılır
-- Aynı maçtan farklı oran seçilirse → eski seçim güncellenir
+- Selecting a new odd → adds it to the slip
+- Clicking the same odd again → removes it from the slip
+- Selecting a different odd from the same match → replaces the previous selection
 
-MBS (Minimum Bahis Sayısı) kuralı: Kuponda yeterli bahis yoksa "Kupon Yap" butonu disable. 
-Maks. kazanç üst limiti 12.500.000 TL.
+MBS (Minimum Bet Count) rule: The "Place Bet" button is disabled when the slip doesn't meet the required minimum.
+Maximum potential payout is capped at 12,500,000 TL.
 
-### Responsive Tasarım
+### Responsive Design
 
-Masaüstü ve tablet (≤768px) için iki ayrı layout:
+Two distinct layouts for desktop and tablet (≤768px):
 
-- **Masaüstü:** Sabit sidebar'da kupon paneli, ana alanda bülten
-- **Tablet/Mobil:** Sidebar gizlenir, toolbar'da "Kupon (X)" butonu çıkar. Tıklandığında kupon tam ekran overlay olarak açılır. BetRow ve LeagueHeader iki satırlı grid yapısına geçer.
+- **Desktop:** Fixed sidebar with the betting slip panel, bulletin in the main area
+- **Tablet/Mobile:** Sidebar is hidden, a "Slip (X)" button appears in the toolbar. Tapping it opens the slip as a fullscreen overlay. BetRow and LeagueHeader switch to a two-row grid layout.
 
-Responsive davranış `useMediaQuery` custom hook'u ile yönetiliyor. Satır yüksekliği masaüstünde 34px, mobilde 68px.
+Responsive behavior is managed through a `useMediaQuery` custom hook. Row height is 34px on desktop, 68px on mobile.
 
 ## Tech Stack
 
-| Katman | Teknoloji |
-|--------|-----------|
+| Layer | Technology |
+|-------|------------|
 | UI | React 19 + TypeScript |
 | Build | Webpack 5 + Babel 7 |
-| State (bülten) | Redux Toolkit (`createEntityAdapter`) |
-| State (kupon) | Context API + `useReducer` |
+| State (bulletin) | Redux Toolkit (`createEntityAdapter`) |
+| State (cart) | Context API + `useReducer` |
 | Virtualization | react-window v2 |
-| Stil | SCSS Modules + PostCSS (autoprefixer) |
+| Styling | SCSS Modules + PostCSS (autoprefixer) |
 | Lint/Format | ESLint + Prettier |
-| Ölçüm | web-vitals (LCP, INP, CLS) |
+| Metrics | web-vitals (LCP, INP, CLS) |
