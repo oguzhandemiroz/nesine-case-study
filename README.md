@@ -2,7 +2,7 @@
 
 İddaa bülten ekranı ve kupon oluşturma uygulaması. ~3000 maçı tek sayfada performanslı şekilde listeler, oran seçimi ile kupon oluşturmayı sağlar. UI tasarımı nesine.com'a uygun şekilde ayarlanmıştır. Mobil cihazlarda da benzer deneyimi yaşatabilmek adına responsive şekilde geliştirilmiştir.
 
-**Demo:** <!-- GitHub Pages URL'i deploy sonrası eklenecek -->
+**Demo:** https://oguzhandemiroz.github.io/nesine-case-study/
 
 | Masaüstü | Mobil | Mobil Kupon |
 |:---:|:---:|:---:|
